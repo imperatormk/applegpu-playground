@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AppleGPU Playground</title>
+<meta name="description" content="Compile Metal kernels to Apple GPU AIR and run them on real Apple Silicon.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>AppleGPU Playground</h1>
+  <span class="sub">@triton.jit → TTGIR → LLVM IR → AIR metallib → real GPU run on Apple Silicon</span>
+  <span class="gpu" id="gpu">●&nbsp;connecting…</span>
+</header>
+<main>
+  <section class="pane">
+    <div class="pane-head">@triton.jit kernel (Python), define run() returning max-abs err</div>
+    <div id="editor"></div>
+    <div class="controls">
+      <label class="sub">kernel zoo</label>
+      <select id="zoo"></select>
+      <button id="go">Compile &amp; Run</button>
+      <span id="qd" class="sub"></span>
+    </div>
+  </section>
+  <section class="pane">
+    <div class="pane-head">pipeline output</div>
+    <div class="out" id="out"><div class="hint">Hit “Compile &amp; Run”.</div></div>
+  </section>
+</main>
+<script src="config.js"></script>
+<script src="kernels.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
