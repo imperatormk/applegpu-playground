@@ -38,6 +38,9 @@ button:disabled { opacity:.5; cursor:default; }
 .stage-body { display:none; padding:0 14px 12px; overflow:auto; min-height:0; }
 .stage.open > .stage-body { display:block; flex:1 1 auto; }
 .banner { flex:0 0 auto; }
+.pso { flex:0 0 auto; display:flex; flex-wrap:wrap; gap:6px 20px; padding:0 14px 12px;
+       color:var(--mut); font-size:12px; }
+.pso b { color:var(--fg); font-family:ui-monospace,monospace; font-weight:600; }
 pre { margin:0; white-space:pre-wrap; word-break:break-word;
       font:12px/1.45 ui-monospace,monospace; color:var(--fg); }
 .dl { display:inline-block; margin-top:10px; padding:8px 14px; border-radius:6px;

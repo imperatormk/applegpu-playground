@@ -69,6 +69,16 @@ function render(res) {
     : "✗ " + (res.error || "failed");
   out.appendChild(banner);
 
+  if (res.pso && res.pso.ok) {
+    const p = res.pso, tg = p.staticThreadgroupMemoryLength;
+    const bar = document.createElement("div"); bar.className = "pso";
+    bar.innerHTML =
+      `<span><b>${p.maxTotalThreadsPerThreadgroup}</b> max threads/threadgroup</span>` +
+      `<span><b>${p.threadExecutionWidth}</b> SIMD width</span>` +
+      `<span><b>${tg}</b> B static TG${tg === 0 ? " (0 = dynamic/none)" : ""}</span>`;
+    out.appendChild(bar);
+  }
+
   const toggle = div => {
     const wasOpen = div.classList.contains("open");
     out.querySelectorAll(".stage.open").forEach(s => s.classList.remove("open"));
