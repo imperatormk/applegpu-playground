@@ -69,35 +69,36 @@ function render(res) {
     : "✗ " + (res.error || "failed");
   out.appendChild(banner);
 
+  const toggle = div => {
+    const wasOpen = div.classList.contains("open");
+    out.querySelectorAll(".stage.open").forEach(s => s.classList.remove("open"));
+    if (!wasOpen) div.classList.add("open");
+  };
+  let openTarget = null;
   for (const s of res.stages || []) {
     const div = document.createElement("div"); div.className = "stage";
     const cls = s.ok ? "ok" : (res.error ? "err" : "skip");
     const body = s.artifact || "(not reached)";
     const isLib = s.name === "metallib" && s.ok && res.has_metallib;
-    const open = s.ok && (isLib || s.name === "air-ir");
+    if (s.ok && s.name === "air-ir") openTarget = div;        // default expanded
     const dl = isLib
       ? `<a class="dl" href="${API}/api/bundle/${res.job_id}" download>⤓ Download standalone runner (.zip)</a>`
       : "";
     div.innerHTML = `<div class="stage-h"><span class="dot ${cls}"></span>
         <span class="name">${s.name}</span>
         <span class="meta">${esc(s.label || "")}</span></div>
-      <div class="stage-body" style="display:${open?'block':'none'}"><pre>${esc(body)}</pre>${dl}</div>`;
-    div.querySelector(".stage-h").onclick = () => {
-      const b = div.querySelector(".stage-body");
-      b.style.display = b.style.display === "none" ? "block" : "none";
-    };
+      <div class="stage-body"><pre>${esc(body)}</pre>${dl}</div>`;
+    div.querySelector(".stage-h").onclick = () => toggle(div);
     out.appendChild(div);
   }
+  if (openTarget) openTarget.classList.add("open");
 
   if (res.log) {
     const div = document.createElement("div"); div.className = "stage";
     div.innerHTML = `<div class="stage-h"><span class="dot skip"></span>
         <span class="name">stderr</span></div>
-      <div class="stage-body" style="display:none"><pre>${esc(res.log)}</pre></div>`;
-    div.querySelector(".stage-h").onclick = () => {
-      const b = div.querySelector(".stage-body");
-      b.style.display = b.style.display === "none" ? "block" : "none";
-    };
+      <div class="stage-body"><pre>${esc(res.log)}</pre></div>`;
+    div.querySelector(".stage-h").onclick = () => toggle(div);
     out.appendChild(div);
   }
 }
