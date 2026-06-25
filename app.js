@@ -65,7 +65,7 @@ function render(res) {
   const okRun = res.ok && res.err != null;
   banner.className = "banner " + (okRun ? "ok" : "err");
   banner.textContent = okRun
-    ? `✓ compiled through the AppleGPU backend + ran on the GPU — max|err| = ${res.err}`
+    ? `✓ compiled through the AppleGPU backend + ran on the GPU, max|err| = ${res.err}`
     : "✗ " + (res.error || "failed");
   out.appendChild(banner);
 
@@ -73,11 +73,15 @@ function render(res) {
     const div = document.createElement("div"); div.className = "stage";
     const cls = s.ok ? "ok" : (res.error ? "err" : "skip");
     const body = s.artifact || "(not reached)";
-    const open = s.ok && s.name === "ttgir";
+    const isLib = s.name === "metallib" && s.ok && res.has_metallib;
+    const open = s.ok && (isLib || s.name === "ttgir");
+    const dl = isLib
+      ? `<a class="dl" href="${API}/api/bundle/${res.job_id}" download>⤓ Download standalone runner (.zip)</a>`
+      : "";
     div.innerHTML = `<div class="stage-h"><span class="dot ${cls}"></span>
         <span class="name">${s.name}</span>
         <span class="meta">${esc(s.label || "")}</span></div>
-      <div class="stage-body" style="display:${open?'block':'none'}"><pre>${esc(body)}</pre></div>`;
+      <div class="stage-body" style="display:${open?'block':'none'}"><pre>${esc(body)}</pre>${dl}</div>`;
     div.querySelector(".stage-h").onclick = () => {
       const b = div.querySelector(".stage-body");
       b.style.display = b.style.display === "none" ? "block" : "none";
