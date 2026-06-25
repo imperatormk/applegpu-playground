@@ -74,7 +74,7 @@ function render(res) {
     const cls = s.ok ? "ok" : (res.error ? "err" : "skip");
     const body = s.artifact || "(not reached)";
     const isLib = s.name === "metallib" && s.ok && res.has_metallib;
-    const open = s.ok && (isLib || s.name === "ttgir");
+    const open = s.ok && (isLib || s.name === "air-ir");
     const dl = isLib
       ? `<a class="dl" href="${API}/api/bundle/${res.job_id}" download>⤓ Download standalone runner (.zip)</a>`
       : "";
