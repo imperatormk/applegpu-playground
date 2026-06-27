@@ -122,11 +122,42 @@ $("#go").onclick = async () => {
       body: JSON.stringify({ source: getSource() })
     });
     $("#qd").textContent = sub.queue_depth > 0 ? `queue: ${sub.queue_depth}` : "";
+    lastJobId = sub.job_id || "";
     render(await poll(sub.job_id));
   } catch (e) {
     $("#out").innerHTML = `<div class="banner err">✗ ${esc(""+e)}</div>`;
   } finally {
     $("#qd").textContent = ""; btn.disabled = false; btn.textContent = "Compile & Run";
+  }
+};
+
+// ── Report a bug ──────────────────────────────────────────────────────────
+let lastJobId = "";
+const modal = $("#bug-modal");
+const openModal = () => { $("#bug-status").textContent = ""; modal.hidden = false; $("#bug-notes").focus(); };
+const closeModal = () => { modal.hidden = true; };
+
+$("#bug").onclick = openModal;
+$("#bug-cancel").onclick = closeModal;
+modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.hidden) closeModal(); });
+
+$("#bug-send").onclick = async () => {
+  const btn = $("#bug-send"); btn.disabled = true;
+  const status = $("#bug-status"); status.className = "modal-status"; status.textContent = "Sending…";
+  try {
+    const r = await fetch(API + "/api/report", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ source: getSource(), notes: $("#bug-notes").value || "", job_id: lastJobId })
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    status.className = "modal-status ok"; status.textContent = "Thanks, report sent.";
+    $("#bug-notes").value = "";
+    setTimeout(closeModal, 2500);
+  } catch (e) {
+    status.className = "modal-status err"; status.textContent = "Could not send: " + e;
+  } finally {
+    btn.disabled = false;
   }
 };
 

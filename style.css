@@ -1,5 +1,5 @@
 :root { --bg:#0d1117; --panel:#161b22; --border:#30363d; --fg:#c9d1d9;
-        --accent:#58a6ff; --ok:#3fb950; --err:#f85149; --mut:#8b949e;
+        --accent:#58a6ff; --ok:#3fb950; --err:#f85149; --mut:#8b949e; --warn:#d29922;
         --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif; }
 * { box-sizing:border-box; }
 body { margin:0; font:14px/1.5 var(--ui); background:var(--bg); color:var(--fg); }
@@ -63,3 +63,29 @@ pre { margin:0; white-space:pre-wrap; word-break:break-word;
   .controls #go { flex:1 1 100%; }
   pre { white-space:pre; overflow-x:auto; word-break:normal; }
 }
+
+/* ── ghost button (Report a bug) ──────────────────────────────────────── */
+button.ghost { background:transparent; color:var(--mut); border:1px solid var(--border);
+               display:inline-flex; align-items:center; justify-content:center; gap:6px;
+               line-height:1; }
+button.ghost:hover { color:var(--fg); border-color:var(--mut); }
+button.ghost svg { display:block; flex:0 0 auto; }
+/* Report a bug: yellow text + border, dark button bg (border-only look) */
+#bug { background:var(--panel); color:var(--warn); border-color:var(--warn); }
+#bug:hover { background:#241d0c; color:var(--warn); border-color:var(--warn); }
+
+/* ── report-a-bug modal ───────────────────────────────────────────────── */
+.modal { position:fixed; inset:0; background:rgba(0,0,0,.55);
+         display:flex; align-items:center; justify-content:center; z-index:50; padding:16px; }
+.modal[hidden] { display:none; }
+.modal-card { background:var(--panel); border:1px solid var(--border); border-radius:10px;
+              width:100%; max-width:460px; padding:18px 18px 16px; }
+.modal-head { font-weight:600; font-size:15px; }
+.modal-sub { color:var(--mut); font-size:12px; margin:6px 0 14px; line-height:1.5; }
+.modal-label { display:block; font-size:13px; margin-bottom:6px; }
+.modal-card textarea { width:100%; box-sizing:border-box; resize:vertical;
+              background:var(--bg); border:1px solid var(--border); color:var(--fg);
+              border-radius:6px; padding:8px 10px; font:13px ui-monospace,monospace; }
+.modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:14px; }
+.modal-status { font-size:12px; margin-top:10px; min-height:16px; color:var(--mut); }
+.modal-status.ok { color:var(--ok); } .modal-status.err { color:var(--err); }
