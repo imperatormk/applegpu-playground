@@ -101,8 +101,7 @@ function render(res) {
     div.querySelector(".stage-h").onclick = () => toggle(div);
     out.appendChild(div);
   }
-  if (openTarget) openTarget.classList.add("open");
-
+  let stderrTarget = null;
   if (res.log) {
     const div = document.createElement("div"); div.className = "stage";
     div.innerHTML = `<div class="stage-h"><span class="dot skip"></span>
@@ -110,7 +109,12 @@ function render(res) {
       <div class="stage-body"><pre>${esc(res.log)}</pre></div>`;
     div.querySelector(".stage-h").onclick = () => toggle(div);
     out.appendChild(div);
+    stderrTarget = div;
   }
+
+  // On a failed run, expand stderr (where the error is); otherwise air-ir.
+  const open = (!okRun && stderrTarget) ? stderrTarget : openTarget;
+  if (open) open.classList.add("open");
 }
 
 $("#go").onclick = async () => {
