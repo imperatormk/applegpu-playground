@@ -3,17 +3,40 @@ const $ = s => document.querySelector(s);
 
 const KERNELS = window.KERNELS || [];
 const zoo = $("#zoo");
-KERNELS.forEach((k, i) => {
-  const opt = document.createElement("option");
-  opt.value = String(i);
-  opt.textContent = k.label;
-  zoo.appendChild(opt);
+const customOpt = document.createElement("option");
+customOpt.value = "custom";
+customOpt.textContent = "-- custom --";
+customOpt.disabled = true;
+customOpt.hidden = true;
+zoo.appendChild(customOpt);
+const GROUPS = [
+  { cat: "triton", label: "@triton.jit" },
+  { cat: "gluon", label: "Gluon (layout-explicit)" },
+];
+GROUPS.forEach(g => {
+  const inGroup = KERNELS.map((k, i) => [k, i]).filter(([k]) => (k.cat || "triton") === g.cat);
+  if (!inGroup.length) return;
+  const grp = document.createElement("optgroup");
+  grp.label = g.label;
+  inGroup.forEach(([k, i]) => {
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = k.label;
+    grp.appendChild(opt);
+  });
+  zoo.appendChild(grp);
 });
 
 let editor = null;
+let settingFromZoo = false;
 const initialSource = KERNELS.length ? KERNELS[0].source : "";
 const getSource = () => (editor ? editor.getValue() : initialSource);
-const setSource = s => { if (editor) editor.setValue(s); };
+const setSource = s => {
+  if (!editor) return;
+  settingFromZoo = true;
+  editor.setValue(s);
+  settingFromZoo = false;
+};
 
 require.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs" } });
 require(["vs/editor/editor.main"], () => {
@@ -27,9 +50,15 @@ require(["vs/editor/editor.main"], () => {
     automaticLayout: true,
     tabSize: 4,
   });
+  editor.onDidChangeModelContent(() => {
+    if (!settingFromZoo) zoo.value = "custom";
+  });
 });
 
-zoo.onchange = () => setSource(KERNELS[+zoo.value].source);
+zoo.onchange = () => {
+  if (zoo.value === "custom") return;
+  setSource(KERNELS[+zoo.value].source);
+};
 
 async function api(path, opts) {
   const r = await fetch(API + path, opts);
@@ -119,7 +148,7 @@ function render(res) {
 
 $("#go").onclick = async () => {
   const btn = $("#go"); btn.disabled = true; btn.textContent = "Running…";
-  $("#out").innerHTML = `<div class="hint">compiling @triton.jit → AIR → dispatching to the GPU…</div>`;
+  $("#out").innerHTML = `<div class="hint">JIT compiling → AIR → dispatching to the GPU…</div>`;
   try {
     const sub = await api("/api/compile", {
       method:"POST", headers:{"content-type":"application/json"},
