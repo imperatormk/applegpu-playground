@@ -123,9 +123,12 @@ function render(res) {
     const dl = isLib
       ? `<a class="dl" href="${API}/api/bundle/${res.job_id}" download>⤓ Download standalone runner (.zip)</a>`
       : "";
+    const dlMini = isLib
+      ? `<a class="dl-mini" href="${API}/api/bundle/${res.job_id}" download onclick="event.stopPropagation()">⤓ runner .zip</a>`
+      : "";
     div.innerHTML = `<div class="stage-h"><span class="dot ${cls}"></span>
         <span class="name">${s.name}</span>
-        <span class="meta">${esc(s.label || "")}</span></div>
+        <span class="meta">${esc(s.label || "")}</span>${dlMini}</div>
       <div class="stage-body"><pre>${esc(body)}</pre>${dl}</div>`;
     div.querySelector(".stage-h").onclick = () => toggle(div);
     out.appendChild(div);

@@ -46,6 +46,10 @@ pre { margin:0; white-space:pre-wrap; word-break:break-word;
 .dl { display:inline-block; margin-top:10px; padding:8px 14px; border-radius:6px;
       background:var(--accent); color:#0d1117; font:600 13px var(--ui);
       text-decoration:none; }
+.dl-mini { margin-left:12px; padding:3px 10px; border-radius:5px;
+      background:var(--accent); color:#0d1117; font:600 12px var(--ui);
+      text-decoration:none; white-space:nowrap; }
+.stage.open > .stage-h .dl-mini { display:none; }
 .banner { padding:10px 14px; font-weight:600; }
 .banner.ok{ color:var(--ok);} .banner.err{ color:var(--err);}
 .hint { color:var(--mut); padding:14px; }
