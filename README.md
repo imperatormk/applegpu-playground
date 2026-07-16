@@ -6,8 +6,9 @@ kernels to Apple GPU (AIR) and running them on real Apple Silicon.
 **Live:** https://imperatormk.github.io/applegpu-playground/
 
 Write a `@triton.jit` kernel, hit **Compile & Run**, and see each stage of the
-pipeline: Triton IR, Triton GPU IR (with the Apple GPU layouts), LLVM IR, and
-the final AIR `.metallib`, plus the numerical result from running it on the GPU.
+pipeline: Triton IR, Triton GPU IR (with the Apple GPU layouts), the emitted
+Metal Shading Language, and the final `.metallib`, plus the numerical result
+from running it on the GPU.
 
 This repo is **only the static frontend.** It talks to a compile API running on
 a real Apple Silicon machine. The backend (the Triton to AIR compiler and the

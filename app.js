@@ -119,7 +119,7 @@ function render(res) {
     const cls = s.ok ? "ok" : (res.error ? "err" : "skip");
     const body = s.artifact || "(not reached)";
     const isLib = s.name === "metallib" && s.ok && res.has_metallib;
-    if (s.ok && s.name === "air-ir") openTarget = div;        // default expanded
+    if (s.ok && (s.name === "msl" || s.name === "air-ir")) openTarget = div;
     const dl = isLib
       ? `<a class="dl" href="${API}/api/bundle/${res.job_id}" download>⤓ Download standalone runner (.zip)</a>`
       : "";
@@ -144,7 +144,6 @@ function render(res) {
     stderrTarget = div;
   }
 
-  // On a failed run, expand stderr (where the error is); otherwise air-ir.
   const open = (!okRun && stderrTarget) ? stderrTarget : openTarget;
   if (open) open.classList.add("open");
 }
